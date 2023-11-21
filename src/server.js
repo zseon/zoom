@@ -1,11 +1,7 @@
-/*
-    1. express 설치
-    2. view 엔진, 경로 설정
-    3. static 파일 경로 설정
-    4. 미들웨어
-    5. 리슨 포트
-*/
+import http from "http";
 import express from "express";
+import WebSocket from "ws";
+
 const app = express();
 const PORT = 3000;
 
@@ -16,4 +12,8 @@ app.use("/public", express.static(__dirname + "/public")); // 유저에게 파�
 app.get("/", (req, res) => res.render("home")); // 홈 템플릿 랜더
 
 const handleListen = () => console.log(`listening to http://localhost:${PORT}`);
-app.listen(3000, handleListen);
+
+const server = http.createServer(app);
+const wss = new WebSocket.Server({ server });
+
+server.listen(3000, handleListen);
