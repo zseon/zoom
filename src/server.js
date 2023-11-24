@@ -5,15 +5,25 @@ import WebSocket from "ws";
 const app = express();
 const PORT = 3000;
 
+// set template config
 app.set("view engine", "pug"); // 템플릿 엔진
 app.set("views", __dirname + "/views"); // 템플릿 경로
-
 app.use("/public", express.static(__dirname + "/public")); // 유저에게 파일 공유(html,css,js)
+
+//req
 app.get("/", (req, res) => res.render("home")); // 홈 템플릿 랜더
 
-const handleListen = () => console.log(`listening to http://localhost:${PORT}`);
-
+// set http server
 const server = http.createServer(app);
-const wss = new WebSocket.Server({ server });
 
-server.listen(3000, handleListen);
+// set socket server
+const wss = new WebSocket.Server({ server });
+wss.on("connection", (socket) => {
+  console.log("Connected to Browser ✅");
+  socket.on("close", () => console.log("Disconnected from the Browser ❌"));
+  socket.on("message", (message) => console.log(message.toString()));
+  socket.send("hello!!!");
+});
+
+// listen server
+server.listen(PORT, () => console.log(`http://localhost:${PORT}`));
